@@ -1,5 +1,8 @@
 import numpy as np
 import cv2
+
+# From: https://www.hackster.io/mjrobot/automatic-vision-object-tracking-5575c4#toc-step-5--object-movement-tracking-6
+
 cap = cv2.VideoCapture(0)
 while(True):
     ret, frame = cap.read()

@@ -1,5 +1,8 @@
 # https://www.pyimagesearch.com/2018/11/12/yolo-object-detection-with-opencv/
 # import the necessary packages
+#
+# TODO
+# * Can make list of types of object smaller to speed it up?
 from imutils.video import VideoStream
 import numpy as np
 import argparse
@@ -33,9 +36,11 @@ COLORS = np.random.randint(0, 255, size=(len(LABELS), 3),
 	dtype="uint8")
  
 # derive the paths to the YOLO weights and model configuration
-weightsPath = os.path.sep.join([args["darknet"], "yolov3.weights"])
-configPath = os.path.sep.join([args["darknet"], "cfg/yolov3.cfg"])
- 
+# weightsPath = os.path.sep.join([args["darknet"], "yolov3.weights"])
+# configPath = os.path.sep.join([args["darknet"], "cfg/yolov3.cfg"])
+weightsPath = os.path.sep.join([args["darknet"], "yolov3-tiny.weights"])
+configPath = os.path.sep.join([args["darknet"], "cfg/yolov3-tiny.cfg"])
+
 # load our YOLO object detector trained on COCO dataset (80 classes)
 # and determine only the *output* layer names that we need from YOLO
 print("[INFO] loading YOLO from disk...")
@@ -68,14 +73,20 @@ while True:
 	if args["input"] is not None and frame is None:
 		break
 
-    # if the frame dimensions are empty, grab them
+	# resize the frame to have a maximum width of 500 pixels (the
+	# less data we have, the faster we can process it), then convert
+	# the frame from BGR to RGB for dlib
+	#frame = imutils.resize(frame, width=500)
+
+	# if the frame dimensions are empty, grab them
 	if W is None or H is None:
 		(H, W) = frame.shape[:2]
 
 	# construct a blob from the input frame and then perform a forward
 	# pass of the YOLO object detector, giving us our bounding boxes
 	# and associated probabilities
-	blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
+	# 416 each step down loses accuracy
+	blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416), [0, 0, 0],
 		swapRB=True, crop=False)
 	net.setInput(blob) # feed the brain
 	start = time.time()
@@ -97,10 +108,13 @@ while True:
 			scores = detection[5:]
 			classID = np.argmax(scores)
 			confidence = scores[classID]
+			print("[INFO] preliminary detection... {:.2f}".format(confidence))
 
 			# filter out weak predictions by ensuring the detected
 			# probability is greater than the minimum probability
 			if confidence > args["confidence"]:
+				print("[INFO] detected...")
+
 				# scale the bounding box coordinates back relative to
 				# the size of the image, keeping in mind that YOLO
 				# actually returns the center (x, y)-coordinates of
@@ -141,7 +155,7 @@ while True:
 			cv2.putText(frame, text, (x, y - 5),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    # show the output frame
+	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 
@@ -149,6 +163,3 @@ while True:
 	if key == ord("q"):
 		break
 
-# release the file pointers
-print("[INFO] cleaning up...")
-vs.release()

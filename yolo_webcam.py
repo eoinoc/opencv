@@ -41,3 +41,14 @@ print("[INFO] loading YOLO from disk...")
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+
+# if a video path was not supplied, grab a reference to the webcam
+if not args.get("input", False):
+	print("[INFO] starting video stream...")
+	vs = VideoStream(src=0).start()
+	time.sleep(2.0)
+
+# otherwise, grab a reference to the video file
+else:
+	print("[INFO] opening video file...")
+	vs = cv2.VideoCapture(args["input"])

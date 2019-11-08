@@ -58,7 +58,8 @@ else:
 while True:
 	# grab the next frame and handle if we are reading from either
 	# VideoCapture or VideoStream
-	frame = vs.read()
+	# read the next frame from the file
+	(grabbed, frame) = vs.read()
 	frame = frame[1] if args.get("input", False) else frame
 
 	# if we are viewing a video and we did not grab a frame then we

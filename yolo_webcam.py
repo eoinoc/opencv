@@ -1,5 +1,6 @@
 # https://www.pyimagesearch.com/2018/11/12/yolo-object-detection-with-opencv/
 # import the necessary packages
+from imutils.video import VideoStream
 import numpy as np
 import argparse
 import imutils
@@ -52,3 +53,19 @@ if not args.get("input", False):
 else:
 	print("[INFO] opening video file...")
 	vs = cv2.VideoCapture(args["input"])
+
+# loop over frames from the video stream
+while True:
+	# grab the next frame and handle if we are reading from either
+	# VideoCapture or VideoStream
+	frame = vs.read()
+	frame = frame[1] if args.get("input", False) else frame
+
+	# if we are viewing a video and we did not grab a frame then we
+	# have reached the end of the video
+	if args["input"] is not None and frame is None:
+		break
+
+    # show the output frame
+	cv2.imshow("Frame", frame)
+	key = cv2.waitKey(1) & 0xFF

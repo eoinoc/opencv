@@ -90,7 +90,7 @@ while True:
 	# pass of the YOLO object detector, giving us our bounding boxes
 	# and associated probabilities
 	# 416 each step down loses accuracy
-	blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416), [0, 0, 0],
+	blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416),
 		swapRB=True, crop=False)
 	net.setInput(blob) # feed the brain
 	start = time.time()

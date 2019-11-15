@@ -7,6 +7,7 @@ from imutils.video import VideoStream
 import numpy as np
 import argparse
 import imutils
+from imutils.video import FPS
 import time
 import cv2
 import os
@@ -60,6 +61,9 @@ else:
 	vs = cv2.VideoCapture(args["input"])
 
 (W, H) = (None, None)
+
+# start the frames per second throughput estimator
+fps = FPS().start()
 
 # loop over frames from the video stream
 while True:
@@ -162,4 +166,11 @@ while True:
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 		break
+
+	fps.update()
+
+fps.stop()
+print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+
+
 

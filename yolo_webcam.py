@@ -3,11 +3,15 @@
 #
 # TODO
 # * Can make list of types of object smaller to speed it up?
-from imutils.video import VideoStream
+# from imutils.video import VideoStream
 import numpy as np
 import argparse
 import imutils
 from imutils.video import FPS
+# https://github.com/jrosebr1/imutils/blob/master/imutils/video/pivideostream.py
+# from imutils.video.pivideostream import PiVideoStream
+# https://www.pyimagesearch.com/2016/01/18/multiple-cameras-with-the-raspberry-pi-and-opencv/
+from imutils.video import VideoStream
 import time
 import cv2
 import os
@@ -52,7 +56,23 @@ ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 # if a video path was not supplied, grab a reference to the webcam
 if not args.get("input", False):
 	print("[INFO] starting video stream...")
-	vs = VideoStream(src=0).start()
+	# vs = VideoStream(src=0).start()
+	# time.sleep(2.0)
+
+	# Single threaded?
+	# initialize the camera and stream
+	# camera = PiCamera()
+	# camera.resolution = (320, 240)
+	# camera.framerate = 32
+	# rawCapture = PiRGBArray(camera, size=(320, 240))
+	# vs = camera.capture_continuous(rawCapture, format="bgr",
+	# use_video_port=True)
+	
+	# Multithreaded
+	# vs = PiVideoStream().start()
+
+	vs = VideoStream(usePiCamera=True, resolution=(320, 240)).start()
+	# Wait for camera to become available
 	time.sleep(2.0)
 
 # otherwise, grab a reference to the video file
@@ -171,6 +191,4 @@ while True:
 
 fps.stop()
 print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-
-
 

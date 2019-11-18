@@ -116,6 +116,8 @@ while True:
 	start = time.time()
 	layerOutputs = net.forward(ln)
 	end = time.time()
+	# show timing information on YOLO
+	print("[INFO] YOLO took {:.6f} seconds".format(end - start))
  
 	# initialize our lists of detected bounding boxes, confidences,
 	# and class IDs, respectively
@@ -132,12 +134,10 @@ while True:
 			scores = detection[5:]
 			classID = np.argmax(scores)
 			confidence = scores[classID]
-			print("[INFO] preliminary detection... {:.2f}".format(confidence))
 
 			# filter out weak predictions by ensuring the detected
 			# probability is greater than the minimum probability
 			if confidence > args["confidence"]:
-				print("[INFO] detected...")
 
 				# scale the bounding box coordinates back relative to
 				# the size of the image, keeping in mind that YOLO

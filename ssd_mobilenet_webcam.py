@@ -1,4 +1,8 @@
 # https://www.pyimagesearch.com/2017/09/18/real-time-object-detection-with-deep-learning-and-opencv/
+# Further speed improvements can be obtained by:
+# Applying skip frames.
+# Swapping different variations of MobileNet (that are faster, but less accurate).
+
 # import the necessary packages
 from imutils.video import VideoStream
 from imutils.video import FPS
@@ -10,7 +14,7 @@ import cv2
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-c", "--confidence", type=float, default=0.2,
+ap.add_argument("-c", "--confidence", type=float, default=0.8,
 	help="minimum probability to filter weak detections")
 args = vars(ap.parse_args())
 
@@ -30,7 +34,7 @@ net = cv2.dnn.readNetFromCaffe("mobilenet_ssd/MobileNetSSD_deploy.prototxt",
 # initialize the video stream, allow the cammera sensor to warmup,
 # and initialize the FPS counter
 print("[INFO] starting video stream...")
-vs = VideoStream(src=0).start()
+vs = VideoStream(usePiCamera=True).start()
 time.sleep(2.0)
 fps = FPS().start()
 

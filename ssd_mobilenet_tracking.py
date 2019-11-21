@@ -112,6 +112,7 @@ while True:
 		detections = net.forward()
 
 		# loop over the detections
+		# https://docs.scipy.org/doc/numpy/reference/generated/numpy.arange.html
 		for i in numpy.arange(0, detections.shape[2]):
 			# extract the confidence (i.e., probability) associated
 			# with the prediction
@@ -159,7 +160,7 @@ while True:
 	# otherwise, we've already performed detection so let's track
 	# multiple objects
 	else:
-		# loop over each of our input ques and add the input RGB
+		# loop over each of our input queues and add the input RGB
 		# frame to it, enabling us to update each of the respective
 		# object trackers running in separate processes
 		for iq in inputQueues:
@@ -167,6 +168,9 @@ while True:
 
 		# loop over each of the output queues
 		for oq in outputQueues:
+    		# Bug here? Because the bounding box seems to lose track of the
+			# object, especially if it leaves the screen
+
 			# grab the updated bounding box coordinates for the
 			# object -- the .get method is a blocking operation so
 			# this will pause our execution until the respective

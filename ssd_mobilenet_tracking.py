@@ -5,7 +5,7 @@
 from imutils.video import FPS
 from imutils.video import VideoStream
 import multiprocessing
-import numpy as np
+import numpy
 import argparse
 import imutils
 import dlib
@@ -112,7 +112,7 @@ while True:
 		detections = net.forward()
 
 		# loop over the detections
-		for i in np.arange(0, detections.shape[2]):
+		for i in numpy.arange(0, detections.shape[2]):
 			# extract the confidence (i.e., probability) associated
 			# with the prediction
 			confidence = detections[0, 0, i, 2]
@@ -131,7 +131,7 @@ while True:
 
 				# compute the (x, y)-coordinates of the bounding box
 				# for the object
-				box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+				box = detections[0, 0, i, 3:7] * numpy.array([w, h, w, h])
 				(startX, startY, endX, endY) = box.astype("int")
 				bb = (startX, startY, endX, endY)
 

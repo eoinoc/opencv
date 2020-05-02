@@ -21,10 +21,13 @@ modelWeights = '../darknet/yolov3-tiny.weights'
 labelsPath = '../darknet/data/coco.names'
 labels = open(labelsPath).read().strip().split('\n')
 
+# OpenCV Net class, to manipulate neural nets
+# https://docs.opencv.org/3.4/db/d30/classcv_1_1dnn_1_1Net.html
 net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 
-outputLayer = net.getLayerNames()
-outputLayer = [outputLayer[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+# determine only the *output* layer names that we need from YOLO
+layerNames = net.getLayerNames()
+layerNames = [layerNames[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
 # if a video path was not supplied, use the sample
 if not args.get("video", False):
@@ -40,7 +43,6 @@ time.sleep(2.0)
 while True:
     # read the next frame from the file
     (grabbed, frame) = vs.read()
-    print("info yeah")
  
     # if the frame was not grabbed, then we have reached the end
     # of the stream
@@ -55,9 +57,12 @@ while True:
     # pass of the YOLO object detector, giving us our bounding boxes
     # and associated probabilities
     # 288 / 416
-    blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (288, 288), swapRB = True, crop = False)
+    blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (288, 288), 
+        swapRB = True, crop = False)
     net.setInput(blob)
-    outputsOfLayer = net.forward(outputLayer)
+
+    # Runs forward pass to compute output of layer
+    outputsOfLayer = net.forward(layerNames)
 
     boxes = []
     confidences = []
@@ -65,23 +70,35 @@ while True:
 
     for output in outputsOfLayer:
         for detection in output:
+            # returns the probability score for each classes
+            # 5: means range of "5 to end"
             scores = detection[5:]
+
             classID = np.argmax(scores)
-            
+            # TODO it's always returning index 0 now, so doesn't 
+            # seem to be classifying correctly
             # if classID not in ["car"]:
             #     print(classID)
             #     continue
             
             confidence = scores[classID]
             if confidence > confidenceThreshold:
+       
+                # scale the bounding box coordinates back relative to the
+                # size of the image, keeping in mind that YOLO actually
+                # returns the center (x, y)-coordinates of the bounding
+                # box followed by the boxes' width and height
                 box = detection[0:4] * np.array([W, H, W, H])
                 (centerX, centerY,  width, height) = box.astype('int')
+        
+                # use the center (x, y)-coordinates to derive the top and
+                # and left corner of the bounding box
                 x = int(centerX - (width/2))
                 y = int(centerY - (height/2))
 
                 # draw the circle and centroid on the frame,
                 # then update the list of tracked points
-                radius = 2
+                radius = 50
                 cv2.circle(frame, (int(x), int(y)), int(radius),
                     (0, 255, 255), 2)
 

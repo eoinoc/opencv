@@ -35,6 +35,7 @@ if not args.get("video", False):
 else:
     vs = cv2.VideoCapture(args["video"])
 (W, H) = (None, None)
+firstFrame = None
 
 # allow the camera or video file to warm up
 time.sleep(2.0)
@@ -48,6 +49,9 @@ while True:
     # of the stream
     if not grabbed:
         break
+
+    if firstFrame is None:
+        firstFrame = frame
  
     # if the frame dimensions are empty, grab them
     if W is None or H is None:
@@ -99,11 +103,11 @@ while True:
                 # draw the circle and centroid on the frame,
                 # then update the list of tracked points
                 radius = 50
-                cv2.circle(frame, (int(x), int(y)), int(radius),
+                cv2.circle(firstFrame, (int(x), int(y)), int(radius),
                     (0, 255, 255), 2)
 
     # show the output frame
-    cv2.imshow("Frame", frame)
+    cv2.imshow("Frame", firstFrame)
 
     # if the `q` key was pressed, break from the loop
     key = cv2.waitKey(1) & 0xFF

@@ -1,3 +1,6 @@
+# Thank you pyimagesearch.com
+# https://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/
+
 # import the necessary packages
 from collections import deque
 from imutils.video import VideoStream
@@ -9,7 +12,7 @@ import time
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video", default="videos/red-car-turning.mp4",
+ap.add_argument("-v", "--video", default="videos/cars-bikes-person.mp4",
     help="path to the (optional) video file")
 ap.add_argument("-b", "--buffer", type=int, default=64,
     help="max buffer size")
@@ -109,6 +112,7 @@ while True:
                 # TODO
                 # Try transparency using "addWeighted":
                 # https://gist.github.com/IAmSuyogJadhav/305bfd9a0605a4c096383408bee7fd5c 
+                # https://www.pyimagesearch.com/2016/03/07/transparent-overlays-with-opencv/
 
     # show the output frame
     cv2.imshow("Frame", firstFrame)

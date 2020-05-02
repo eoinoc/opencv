@@ -102,9 +102,13 @@ while True:
 
                 # draw the circle and centroid on the frame,
                 # then update the list of tracked points
-                radius = 50
+                radius = 10
                 cv2.circle(firstFrame, (int(x), int(y)), int(radius),
-                    (0, 255, 255), 2)
+                    (0, 255, 255), -1)
+
+                # TODO
+                # Try transparency using "addWeighted":
+                # https://gist.github.com/IAmSuyogJadhav/305bfd9a0605a4c096383408bee7fd5c 
 
     # show the output frame
     cv2.imshow("Frame", firstFrame)
